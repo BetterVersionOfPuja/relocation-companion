@@ -6,11 +6,9 @@ import AuthInput from "../components/auth/AuthInput";
 import PageTransition from "../components/common/PageTransition";
 import useAuth from "../hooks/useAuth";
 import { registerUser } from "../services/authService";
+import { getAuthErrorMessage } from "../utils/authErrors";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const getErrorMessage = (error) =>
-  error?.response?.data?.message || error?.message || "Unable to create account. Please try again.";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -70,7 +68,10 @@ const Register = () => {
       setStatus({ type: "success", message: "Account created. Redirecting to sign in." });
       setTimeout(() => navigate("/login", { replace: true }), 700);
     } catch (error) {
-      setStatus({ type: "error", message: getErrorMessage(error) });
+      setStatus({
+        type: "error",
+        message: getAuthErrorMessage(error, "Unable to create account. Please try again."),
+      });
     } finally {
       setSubmitting(false);
     }

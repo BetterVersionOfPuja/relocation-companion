@@ -4,9 +4,7 @@ import AuthCard from "../components/auth/AuthCard";
 import AuthInput from "../components/auth/AuthInput";
 import PageTransition from "../components/common/PageTransition";
 import { changePassword } from "../services/authService";
-
-const getErrorMessage = (error) =>
-  error?.response?.data?.message || error?.message || "Unable to change password. Please try again.";
+import { getAuthErrorMessage } from "../utils/authErrors";
 
 const ChangePassword = () => {
   const [values, setValues] = useState({
@@ -56,7 +54,10 @@ const ChangePassword = () => {
       setValues({ currentPassword: "", newPassword: "", confirmPassword: "" });
       setStatus({ type: "success", message: "Password changed successfully." });
     } catch (error) {
-      setStatus({ type: "error", message: getErrorMessage(error) });
+      setStatus({
+        type: "error",
+        message: getAuthErrorMessage(error, "Unable to change password. Please try again."),
+      });
     } finally {
       setSubmitting(false);
     }

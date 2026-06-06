@@ -5,9 +5,7 @@ import AuthCard from "../components/auth/AuthCard";
 import AuthInput from "../components/auth/AuthInput";
 import PageTransition from "../components/common/PageTransition";
 import useAuth from "../hooks/useAuth";
-
-const getErrorMessage = (error) =>
-  error?.response?.data?.message || error?.message || "Unable to sign in. Please try again.";
+import { getAuthErrorMessage } from "../utils/authErrors";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -49,7 +47,10 @@ const Login = () => {
       setStatus({ type: "success", message: "Signed in successfully." });
       navigate(redirectTo, { replace: true });
     } catch (error) {
-      setStatus({ type: "error", message: getErrorMessage(error) });
+      setStatus({
+        type: "error",
+        message: getAuthErrorMessage(error, "Unable to sign in. Please try again."),
+      });
     } finally {
       setSubmitting(false);
     }

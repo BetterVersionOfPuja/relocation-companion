@@ -26,32 +26,7 @@ const HomePage = () => {
   };
 
   return (
-    <main className="app-shell">
-      <nav className="nav-shell mx-auto flex w-full max-w-7xl items-center justify-between gap-5">
-        <a href="/" className="flex min-w-0 items-center gap-3 focus-visible-ring">
-          <div className="brand-mark">
-            <span />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-extrabold tracking-tight text-white">
-              Relocation Companion
-            </p>
-            <p className="hidden text-xs font-semibold text-slate-500 sm:block">
-              Intelligence platform
-            </p>
-          </div>
-        </a>
-
-        <div className="hidden items-center gap-6 text-sm font-semibold text-slate-400 md:flex">
-          <a href="#compare" className="nav-link">Compare</a>
-          <a href="#results" className="nav-link">Insights</a>
-        </div>
-
-        <a href="#compare" className="blue-button inline-flex min-h-10 items-center rounded-lg px-4 text-sm font-bold">
-          Start Comparing
-        </a>
-      </nav>
-
+    <>
       <section className="hero-section mx-auto flex w-full max-w-7xl flex-col items-center pt-14 pb-7 text-center sm:pt-16 lg:pt-20">
         <motion.div
           className="hero-badge"
@@ -122,7 +97,7 @@ const HomePage = () => {
       <footer className="mx-auto mt-16 max-w-7xl border-t border-white/10 pt-6 text-center text-xs font-semibold text-slate-500">
         Data-driven relocation intelligence // {new Date().getFullYear()}
       </footer>
-    </main>
+    </>
   );
 };
 

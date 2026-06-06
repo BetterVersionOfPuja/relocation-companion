@@ -1,11 +1,10 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AuthContext } from "./authContext";
 import {
   getCurrentUser,
   loginUser as loginUserRequest,
   logoutUser as logoutUserRequest,
 } from "../services/authService";
-
-export const AuthContext = createContext(null);
 
 const extractUser = (payload) => payload?.data?.user || payload?.data || null;
 
@@ -55,7 +54,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchCurrentUser();
+    Promise.resolve().then(fetchCurrentUser);
   }, [fetchCurrentUser]);
 
   const value = useMemo(
