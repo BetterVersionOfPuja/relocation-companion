@@ -130,7 +130,7 @@ const Register = () => {
         </form>
 
         <p className="auth-switch">
-          Already have an account? <Link to="/login">Sign In</Link>
+          Already have an account? <Link to="/login">Log In</Link>
         </p>
       </AuthCard>
     </PageTransition>

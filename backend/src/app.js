@@ -6,12 +6,14 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import userRouter from './routes/user.routes.js'
 import cityRouter from "./routes/city.routes.js"
+import savedComparisonRouter from "./routes/savedComparison.routes.js"
 
 const app = express()
 
 app.use(cors({
     origin: [
         "http://localhost:5173",
+        "http://127.0.0.1:5173",
         "https://relocation-companion-rouge.vercel.app"
     ],
     credentials: true
@@ -28,5 +30,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/cities", cityRouter)
+app.use("/api/v1/saved-comparisons", savedComparisonRouter)
+app.use("/api/saved-comparisons", savedComparisonRouter)
 
 export { app }

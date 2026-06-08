@@ -2,7 +2,14 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User} from "../models/user.model.js"
+import { SavedComparison } from "../models/savedComparison.model.js"
 import jwt from "jsonwebtoken"
+
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+}
 
 const generateAccessAndRefereshTokens = async(userId) =>{
     try {
@@ -101,15 +108,10 @@ const loginUser = asyncHandler(async (req, res) =>{
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
-
     return res
     .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
     .json(
         new ApiResponse(
             200, 
@@ -135,15 +137,10 @@ const logoutUser = asyncHandler(async(req, res) => {
         }
     )
 
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
-
     return res
     .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
     .json(new ApiResponse(200, {}, "User logged Out"))
 })
 
@@ -171,17 +168,12 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             
         }
     
-        const options = {
-            httpOnly: true,
-            secure: true
-        }
-    
         const {accessToken, newRefreshToken} = await generateAccessAndRefereshTokens(user._id)
     
         return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newRefreshToken, options)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", newRefreshToken, cookieOptions)
         .json(
             new ApiResponse(
                 200, 
@@ -223,11 +215,56 @@ const getCurrentUser = asyncHandler(async(req, res) => {
     ))
 })
 
+const updateCurrentUser = asyncHandler(async(req, res) => {
+    const { fullName, email } = req.body
+
+    if ([fullName, email].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "Full name and email are required")
+    }
+
+    const existedUser = await User.findOne({
+        email: email.trim().toLowerCase(),
+        _id: { $ne: req.user._id }
+    })
+
+    if (existedUser) {
+        throw new ApiError(409, "Email already belongs to another account")
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                fullName: fullName.trim(),
+                email: email.trim().toLowerCase()
+            }
+        },
+        { new: true }
+    ).select("-password -refreshToken")
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Profile updated successfully"))
+})
+
+const deleteCurrentUser = asyncHandler(async(req, res) => {
+    await SavedComparison.deleteMany({ userId: req.user._id })
+    await User.findByIdAndDelete(req.user._id)
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ApiResponse(200, {}, "Account deleted successfully"))
+})
+
 export {
     registerUser,
     loginUser,
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,
-    getCurrentUser
+    getCurrentUser,
+    updateCurrentUser,
+    deleteCurrentUser
 }

@@ -59,9 +59,7 @@ const Login = () => {
   return (
     <PageTransition className="auth-page">
       <AuthCard
-        eyebrow="Secure Access"
-        title="Sign in to Relocation Companion"
-        subtitle="Access your relocation intelligence workspace with a secure cookie-based session."
+        title="Login to Relocation Companion"
       >
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <AuthInput
@@ -86,7 +84,7 @@ const Login = () => {
           {status.message && <p className={`form-status ${status.type}`}>{status.message}</p>}
 
           <AuthButton type="submit" loading={submitting}>
-            Sign In
+            Login
           </AuthButton>
         </form>
 
