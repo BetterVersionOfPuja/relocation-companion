@@ -1,12 +1,9 @@
 import axios from "axios";
 
-const localApiOrigin =
-  typeof window !== "undefined" ? `http://${window.location.hostname}:8000` : "http://localhost:8000";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || localApiOrigin;
+export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_URL,
   withCredentials: true,
 });
 
